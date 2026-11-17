@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Reservations — Savora Fine Dining</title>
+    <script src="/assets/js/common/theme.js"></script>
+    <link rel="stylesheet" href="/assets/css/public/global.css?v=6">
+    <link rel="stylesheet" href="/assets/css/public/home.css?v=6">
+    <link rel="stylesheet" href="/assets/css/public/portal.css?v=6">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: siteHeader}"></div>
+
+    <main class="portal-main">
+        <div class="container">
+            <!-- Top Banner -->
+            <section class="portal-banner">
+                <div>
+                    <span class="portal-banner__eyebrow">✦ REAL-TIME TABLE BOOKING</span>
+                    <h1 class="portal-banner__title">Online Table Reservations</h1>
+                    <p class="portal-banner__subtitle">
+                        Click any dining table on the floor map below, select your arrival time slot, and reserve your 120-minute dining experience.
+                    </p>
+                </div>
+                <div class="portal-banner__actions">
+                    <a href="/customer/orders" class="btn btn-primary">Pre-Order Signature Dishes</a>
+                </div>
+            </section>
+
+            <!-- Feedback Alerts -->
+            <div class="portal-alert portal-alert--success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="portal-alert portal-alert--error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <!-- 2-Column Concierge Sidebar + Workspace -->
+            <div class="concierge-layout">
+                <!-- Left Sticky Concierge Sidebar -->
+                <aside class="concierge-sidebar">
+                    <div class="vip-sidebar-card">
+                        <div class="vip-sidebar-card__top">
+                            <span class="vip-sidebar-card__brand">SAVORA</span>
+                            <span class="vip-sidebar-card__tier" th:text="${session.roleName + ' PRIVILEGE'}">CUSTOMER PRIVILEGE</span>
+                        </div>
+                        <div class="vip-sidebar-card__user">
+                            <img class="vip-sidebar-card__avatar"
+                                 th:src="${session.authUser != null and session.authUser.avatarUrl != null ? session.authUser.avatarUrl : 'https://res.cloudinary.com/dej5mxdrt/image/upload/v1780061324/OIP_dbbjuo.jpg'}"
+                                 alt="">
+                            <div>
+                                <div class="vip-sidebar-card__name" th:text="${session.fullName}">Member Name</div>
+                                <div class="vip-sidebar-card__email" th:text="${session.authUser != null ? session.authUser.email : ''}">member@savora.vn</div>
+                            </div>
+                        </div>
+                        <div class="vip-sidebar-card__footer">
+                            <span>120-Min Window</span>
+                            <span>● Priority Seating</span>
+                        </div>
+                    </div>
+
+                    <nav class="concierge-nav" aria-label="Member Portal Menu">
+                        <a href="/customer/profile" class="concierge-nav__link">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                                    </svg>
+                                </span>
+                                <span>Account &amp; Vouchers</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                        <a href="/customer/reservations" class="concierge-nav__link is-active">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+                                    </svg>
+                                </span>
+                                <span>Table Reservations</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                        <a href="/customer/orders" class="concierge-nav__link">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                                    </svg>
+                                </span>
+                                <span>Pre-Orders &amp; Reviews</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                <!-- Right Main Workspace -->
+                <div class="concierge-content">
+                    <!-- Interactive Floor Map & Booking Form Card -->
+                    <section class="portal-card">
+                        <div class="portal-card__header">
+                            <div>
+                                <span class="portal-card__eyebrow">STEP 1 • CHOOSE YOUR TABLE</span>
+                                <h2 class="portal-card__title">Interactive Floor Table Selection</h2>
+                            </div>
+                            <span class="pill pill-role-CUSTOMER">120-Minute Guaranteed Slot</span>
+                        </div>
+
+                        <!-- Interactive Visual Table Cards -->
+                        <div class="selectable-table-grid" id="visual-table-grid">
+                            <div class="selectable-table-card" th:each="t : ${tables}"
+                                 th:attr="data-id=${t.tableId},data-cap=${t.capacity},data-code=${t.tableCode}">
+                                <div class="selectable-table-card__top">
+                                    <span class="selectable-table-card__code" th:text="${t.tableCode}">T1-B01</span>
+                                    <span class="selectable-table-card__seats" th:text="${'👥 ' + t.capacity + ' Seats'}">👥 4 Seats</span>
+                                </div>
+                                <div class="selectable-table-card__name" th:text="${t.tableName}">Table 01</div>
+                                <div class="selectable-table-card__zone" th:text="${'📍 ' + t.area + ' • ' + (t.note != null ? t.note : 'Fine Dining')}">1st Floor</div>
+                            </div>
+                        </div>
+
+                        <!-- Booking Details Form -->
+                        <form method="post" th:action="@{/customer/reservations/create}" th:object="${reservationForm}" novalidate>
+                            <div class="portal-form-grid">
+                                <div class="portal-form-group portal-form-group--full">
+                                    <label for="tableId">Selected Dining Table *</label>
+                                    <select id="tableId" th:field="*{tableId}" class="portal-form-control" required>
+                                        <option value="">-- Click a table card above or choose from list --</option>
+                                        <option th:each="t : ${tables}"
+                                                th:value="${t.tableId}"
+                                                th:text="${t.tableCode + ' — ' + t.tableName + ' (' + t.area + ' • Up to ' + t.capacity + ' guests)'}">
+                                            T1-B01
+                                        </option>
+                                    </select>
+                                    <small class="field-error" th:if="${#fields.hasErrors('tableId')}" th:errors="*{tableId}"></small>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label for="reservationDate">Reservation Date *</label>
+                                    <input type="date" id="reservationDate" th:field="*{reservationDate}" class="portal-form-control" required>
+                                    <small class="field-error" th:if="${#fields.hasErrors('reservationDate')}" th:errors="*{reservationDate}"></small>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label for="reservationTime">Arrival Time (120-min slot) *</label>
+                                    <input type="time" id="reservationTime" th:field="*{reservationTime}" class="portal-form-control" required>
+                                    <div class="time-slot-pills">
+                                        <button type="button" class="time-slot-pill" data-time="11:30">11:30</button>
+                                        <button type="button" class="time-slot-pill" data-time="12:30">12:30</button>
+                                        <button type="button" class="time-slot-pill" data-time="18:00">18:00</button>
+                                        <button type="button" class="time-slot-pill is-active" data-time="19:00">19:00</button>
+                                        <button type="button" class="time-slot-pill" data-time="20:00">20:00</button>
+                                    </div>
+                                    <small class="field-error" th:if="${#fields.hasErrors('reservationTime')}" th:errors="*{reservationTime}"></small>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label for="guestCount">Party Size (Guests) *</label>
+                                    <input type="number" id="guestCount" th:field="*{guestCount}" min="1" max="30" class="portal-form-control" required>
+                                    <small class="field-error" th:if="${#fields.hasErrors('guestCount')}" th:errors="*{guestCount}"></small>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label for="customerPhone">Contact Phone Number *</label>
+                                    <input type="tel" id="customerPhone" th:field="*{customerPhone}" class="portal-form-control" placeholder="0901234567" required>
+                                    <small class="field-error" th:if="${#fields.hasErrors('customerPhone')}" th:errors="*{customerPhone}"></small>
+                                </div>
+
+                                <div class="portal-form-group portal-form-group--full">
+                                    <label for="specialRequest">Special Occasion &amp; Seating Preferences</label>
+                                    <input type="text" id="specialRequest" th:field="*{specialRequest}" class="portal-form-control"
+                                           placeholder="e.g. Anniversary candlelit setup, quiet corner, wine pairing sommelier...">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px; padding: 13px 24px;">
+                                Confirm Table Reservation
+                            </button>
+                        </form>
+                    </section>
+
+                    <!-- My Reservations History -->
+                    <section class="portal-card">
+                        <div class="portal-card__header">
+                            <div>
+                                <span class="portal-card__eyebrow">RESERVATION SCHEDULE</span>
+                                <h2 class="portal-card__title">My Table Bookings</h2>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Booking Ref</th>
+                                        <th>Table &amp; Zone</th>
+                                        <th>Date</th>
+                                        <th>120-Min Window</th>
+                                        <th>Party Size</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="r : ${reservations}">
+                                        <td><code th:text="${'#' + r.reservationCode}">#RES-101</code></td>
+                                        <td>
+                                            <strong th:text="${r.tableCode}">T1-B01</strong>
+                                            <span class="user-cell__sub" style="display: block;" th:text="${r.tableName + ' (' + r.area + ')'}">1st Floor</span>
+                                        </td>
+                                        <td th:text="${r.reservationDate}">2026-11-17</td>
+                                        <td th:text="${r.reservationTime + ' – ' + r.endTime}">19:00 – 21:00</td>
+                                        <td th:text="${r.guestCount + ' Guests'}">2 Guests</td>
+                                        <td>
+                                            <span class="pill"
+                                                  th:classappend="${r.status == 'CONFIRMED' or r.status == 'COMPLETED' ? 'pill-status-ACTIVE' : (r.status == 'CANCELLED' ? 'pill-status-LOCKED' : 'pill-status-PENDING')}"
+                                                  th:text="${'● ' + r.status}">● CONFIRMED</span>
+                                        </td>
+                                        <td>
+                                            <form th:if="${r.status == 'PENDING' or r.status == 'CONFIRMED'}"
+                                                  method="post"
+                                                  th:action="@{'/customer/reservations/' + ${r.reservationId} + '/cancel'}"
+                                                  style="margin: 0;">
+                                                <button type="submit" class="btn-xs" style="color: var(--danger-color); border-color: var(--danger-color);">
+                                                    Cancel
+                                                </button>
+                                            </form>
+                                            <span th:if="${r.status != 'PENDING' and r.status != 'CONFIRMED'}" style="color: var(--text-muted); font-size: 0.8rem;">—</span>
+                                        </td>
+                                    </tr>
+
+                                    <tr th:if="${#lists.isEmpty(reservations)}">
+                                        <td colspan="7" style="text-align: center; padding: 32px; color: var(--text-muted);">
+                                            You do not have any reservations yet. Click any table card above to book your dining slot!
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/footer :: siteFooter}"></div>
+    <script src="/assets/js/common/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tableSelect = document.getElementById('tableId');
+            const guestInput = document.getElementById('guestCount');
+            const cards = document.querySelectorAll('.selectable-table-card');
+
+            function syncActiveCard() {
+                const selectedId = tableSelect?.value;
+                cards.forEach(card => {
+                    card.classList.toggle('is-selected', card.dataset.id === selectedId);
+                });
+            }
+
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    if (tableSelect) {
+                        tableSelect.value = card.dataset.id;
+                        syncActiveCard();
+                    }
+                    if (guestInput && Number(guestInput.value) > Number(card.dataset.cap)) {
+                        guestInput.value = card.dataset.cap;
+                    }
+                });
+            });
+
+            tableSelect?.addEventListener('change', syncActiveCard);
+            syncActiveCard();
+
+            // Time slot pill clicks
+            const timeInput = document.getElementById('reservationTime');
+            const timePills = document.querySelectorAll('.time-slot-pill');
+            timePills.forEach(pill => {
+                pill.addEventListener('click', () => {
+                    timePills.forEach(p => p.classList.remove('is-active'));
+                    pill.classList.add('is-active');
+                    if (timeInput) timeInput.value = pill.dataset.time;
+                });
+            });
+        });
+    </script>
+</body>
+</html>

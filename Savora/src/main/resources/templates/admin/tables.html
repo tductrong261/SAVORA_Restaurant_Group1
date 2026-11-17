@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floor Tables &amp; Vouchers — Savora Administration</title>
+    <script src="/assets/js/common/theme.js"></script>
+    <link rel="stylesheet" href="/assets/css/public/global.css?v=7">
+    <link rel="stylesheet" href="/assets/css/public/home.css?v=7">
+    <link rel="stylesheet" href="/assets/css/public/portal.css?v=7">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: siteHeader}"></div>
+
+    <main class="portal-main">
+        <div class="container">
+            <section class="portal-banner">
+                <div>
+                    <span class="portal-banner__eyebrow">✦ FLOOR ARCHITECTURE &amp; PROMOTIONS</span>
+                    <h1 class="portal-banner__title">Floor Tables &amp; Dining Vouchers</h1>
+                    <p class="portal-banner__subtitle">
+                        Configure dining zones, table capacities, operational states, and promotional discount vouchers across Savora.
+                    </p>
+                </div>
+                <div class="portal-banner__actions">
+                    <a href="/admin/dashboard" class="btn-banner-ghost">← Back to Overview</a>
+                </div>
+            </section>
+
+            <div class="portal-alert portal-alert--success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="portal-alert portal-alert--error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <div class="concierge-layout">
+                <!-- Left Sticky Executive Sidebar -->
+                <aside class="concierge-sidebar">
+                    <div class="vip-sidebar-card">
+                        <div class="vip-sidebar-card__top">
+                            <span class="vip-sidebar-card__brand">SAVORA</span>
+                            <span class="vip-sidebar-card__tier">EXECUTIVE ADMIN</span>
+                        </div>
+                        <div class="vip-sidebar-card__user">
+                            <img class="vip-sidebar-card__avatar"
+                                 th:src="${session.authUser != null and session.authUser.avatarUrl != null ? session.authUser.avatarUrl : 'https://res.cloudinary.com/dej5mxdrt/image/upload/v1780061324/OIP_dbbjuo.jpg'}"
+                                 alt="">
+                            <div>
+                                <div class="vip-sidebar-card__name" th:text="${session.fullName}">Quản Trị Savora</div>
+                                <div class="vip-sidebar-card__email" th:text="${session.authUser != null ? session.authUser.email : 'admin@savora.vn'}">admin@savora.vn</div>
+                            </div>
+                        </div>
+                        <div class="vip-sidebar-card__footer">
+                            <span>Tables &amp; Vouchers</span>
+                            <span>● Live Control</span>
+                        </div>
+                    </div>
+
+                    <nav class="concierge-nav" aria-label="Admin Console Menu">
+                        <a href="/admin/dashboard" class="concierge-nav__link">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                                        <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+                                    </svg>
+                                </span>
+                                <span>Executive Overview</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                        <a href="/admin/users" class="concierge-nav__link">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                    </svg>
+                                </span>
+                                <span>Staff &amp; Member Roles</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                        <a href="/admin/menu" class="concierge-nav__link">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+                                    </svg>
+                                </span>
+                                <span>Menu &amp; Dish Pricing</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                        <a href="/admin/tables" class="concierge-nav__link is-active">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="4" width="18" height="12" rx="2"/><path d="M7 16v4M17 16v4M4 20h16"/>
+                                    </svg>
+                                </span>
+                                <span>Floor Tables &amp; Vouchers</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                <!-- Right Main Workspace -->
+                <div class="concierge-content">
+                    <!-- 1. Add New Dining Table & Create Voucher Side-by-Side -->
+                    <div class="portal-grid-2">
+                        <!-- Left: Add Dining Table -->
+                        <section class="portal-card" style="margin-bottom: 0;">
+                            <div class="portal-card__header">
+                                <div>
+                                    <span class="portal-card__eyebrow">FLOOR CAPACITY</span>
+                                    <h2 class="portal-card__title">Add Dining Table</h2>
+                                </div>
+                            </div>
+
+                            <form method="post" th:action="@{/admin/tables/create}" th:object="${tableForm}" novalidate>
+                                <div class="portal-form-grid">
+                                    <div class="portal-form-group">
+                                        <label for="tableCode">Table Code *</label>
+                                        <input type="text" id="tableCode" th:field="*{tableCode}" class="portal-form-control" placeholder="e.g. T1-B05" required>
+                                    </div>
+                                    <div class="portal-form-group">
+                                        <label for="tableName">Table Name *</label>
+                                        <input type="text" id="tableName" th:field="*{tableName}" class="portal-form-control" placeholder="Bàn 05 - Tầng 1" required>
+                                    </div>
+                                    <div class="portal-form-group">
+                                        <label for="area">Dining Zone *</label>
+                                        <select id="area" th:field="*{area}" class="portal-form-control">
+                                            <option value="Tầng 1">Tầng 1 — Main Hall</option>
+                                            <option value="Tầng 2">Tầng 2 — Garden Terrace</option>
+                                            <option value="Khu VIP">Khu VIP — Private Suites</option>
+                                        </select>
+                                    </div>
+                                    <div class="portal-form-group">
+                                        <label for="capacity">Capacity (Seats) *</label>
+                                        <input type="number" id="capacity" th:field="*{capacity}" min="1" max="40" class="portal-form-control" required>
+                                    </div>
+                                    <div class="portal-form-group portal-form-group--full">
+                                        <label for="note">Table Note</label>
+                                        <input type="text" id="note" th:field="*{note}" class="portal-form-control" placeholder="e.g. Near panoramic garden window">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 4px;">+ Add Dining Table</button>
+                            </form>
+                        </section>
+
+                        <!-- Right: Create Promotional Voucher -->
+                        <section class="portal-card" style="margin-bottom: 0;">
+                            <div class="portal-card__header">
+                                <div>
+                                    <span class="portal-card__eyebrow">PROMOTIONS</span>
+                                    <h2 class="portal-card__title">Create Voucher Code</h2>
+                                </div>
+                            </div>
+
+                            <form method="post" th:action="@{/admin/vouchers/create}" th:object="${voucherForm}" novalidate>
+                                <div class="portal-form-grid">
+                                    <div class="portal-form-group">
+                                        <label for="voucherCode">Voucher Code *</label>
+                                        <input type="text" id="voucherCode" th:field="*{voucherCode}" class="portal-form-control" placeholder="e.g. VIP20" required>
+                                    </div>
+                                    <div class="portal-form-group">
+                                        <label for="discountPercent">Discount (%) *</label>
+                                        <input type="number" id="discountPercent" th:field="*{discountPercent}" min="1" max="90" class="portal-form-control" required>
+                                    </div>
+                                    <div class="portal-form-group">
+                                        <label for="maxDiscountAmount">Max Discount (VND) *</label>
+                                        <input type="number" id="maxDiscountAmount" th:field="*{maxDiscountAmount}" step="10000" class="portal-form-control" required>
+                                    </div>
+                                    <div class="portal-form-group">
+                                        <label for="minOrderValue">Min Order (VND) *</label>
+                                        <input type="number" id="minOrderValue" th:field="*{minOrderValue}" step="10000" class="portal-form-control" required>
+                                    </div>
+                                    <div class="portal-form-group">
+                                        <label for="quantity">Quota *</label>
+                                        <input type="number" id="quantity" th:field="*{quantity}" min="1" class="portal-form-control" required>
+                                    </div>
+                                    <div class="portal-form-group">
+                                        <label for="v-desc">Description *</label>
+                                        <input type="text" id="v-desc" th:field="*{description}" class="portal-form-control" placeholder="Save 20% on VIP dining" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-outline" style="width: 100%; margin-top: 4px;">+ Issue Voucher</button>
+                            </form>
+                        </section>
+                    </div>
+
+                    <!-- 2. Floor Tables Directory -->
+                    <section class="portal-card">
+                        <div class="portal-card__header">
+                            <div>
+                                <span class="portal-card__eyebrow">FLOOR DIRECTORY</span>
+                                <h2 class="portal-card__title">Managed Dining Tables</h2>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Table Name &amp; Note</th>
+                                        <th>Dining Zone</th>
+                                        <th>Capacity</th>
+                                        <th>Current Status</th>
+                                        <th>Status Control</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="t : ${tables}">
+                                        <td><code th:text="${t.tableCode}">T1-B01</code></td>
+                                        <td>
+                                            <strong th:text="${t.tableName}">Table 01</strong>
+                                            <span class="user-cell__sub" style="display: block;" th:text="${t.note != null ? t.note : '—'}">Note</span>
+                                        </td>
+                                        <td th:text="${t.area}">Tầng 1</td>
+                                        <td th:text="${t.capacity + ' Guests'}">4 Guests</td>
+                                        <td>
+                                            <span class="table-status-badge" th:classappend="${'badge-status-' + t.status}" th:text="${t.status}">AVAILABLE</span>
+                                        </td>
+                                        <td>
+                                            <form method="post" th:action="@{'/admin/tables/' + ${t.tableId} + '/status'}" style="display: inline-flex; gap: 6px; align-items: center; margin: 0;">
+                                                <select name="status" class="portal-select" style="padding: 5px 10px; font-size: 0.78rem;">
+                                                    <option value="AVAILABLE" th:selected="${t.status == 'AVAILABLE'}">AVAILABLE</option>
+                                                    <option value="RESERVED" th:selected="${t.status == 'RESERVED'}">RESERVED</option>
+                                                    <option value="OCCUPIED" th:selected="${t.status == 'OCCUPIED'}">OCCUPIED</option>
+                                                    <option value="CLEANING" th:selected="${t.status == 'CLEANING'}">CLEANING</option>
+                                                    <option value="MAINTENANCE" th:selected="${t.status == 'MAINTENANCE'}">MAINTENANCE</option>
+                                                </select>
+                                                <button type="submit" class="btn-xs btn-xs--primary">Apply</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- 3. Promotional Vouchers Directory -->
+                    <section class="portal-card">
+                        <div class="portal-card__header">
+                            <div>
+                                <span class="portal-card__eyebrow">PRIVILEGE CAMPAIGNS</span>
+                                <h2 class="portal-card__title">Active &amp; Disabled Vouchers</h2>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Description</th>
+                                        <th>Discount</th>
+                                        <th>Min Order</th>
+                                        <th>Remaining</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="v : ${vouchers}">
+                                        <td><code th:text="${v.voucherCode}">SAVORA10</code></td>
+                                        <td th:text="${v.description}">Description</td>
+                                        <td th:text="${v.discountPercent + '% (Max ' + #numbers.formatDecimal(v.maxDiscountAmount, 0, 'COMMA', 0, 'POINT') + 'đ)'}">10%</td>
+                                        <td th:text="${#numbers.formatDecimal(v.minOrderValue, 0, 'COMMA', 0, 'POINT') + ' VND'}">500,000 VND</td>
+                                        <td th:text="${v.quantity}">100</td>
+                                        <td>
+                                            <span class="pill"
+                                                  th:classappend="${v.status == 'ACTIVE' ? 'pill-status-ACTIVE' : 'pill-status-LOCKED'}"
+                                                  th:text="${'● ' + v.status}">● ACTIVE</span>
+                                        </td>
+                                        <td>
+                                            <form method="post" th:action="@{'/admin/vouchers/' + ${v.voucherId} + '/toggle'}" style="margin: 0;">
+                                                <button type="submit" class="btn-xs"
+                                                        th:text="${v.status == 'ACTIVE' ? 'Disable' : 'Activate'}">
+                                                    Disable
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/footer :: siteFooter}"></div>
+    <script src="/assets/js/common/api.js"></script>
+</body>
+</html>

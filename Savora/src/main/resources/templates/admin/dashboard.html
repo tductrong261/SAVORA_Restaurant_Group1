@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Overview — Savora Administration</title>
+    <script src="/assets/js/common/theme.js"></script>
+    <link rel="stylesheet" href="/assets/css/public/global.css?v=7">
+    <link rel="stylesheet" href="/assets/css/public/home.css?v=7">
+    <link rel="stylesheet" href="/assets/css/public/portal.css?v=7">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: siteHeader}"></div>
+
+    <main class="portal-main">
+        <div class="container">
+            <!-- Top Executive Banner -->
+            <section class="portal-banner">
+                <div>
+                    <span class="portal-banner__eyebrow">✦ SAVORA EXECUTIVE BACK-OFFICE</span>
+                    <h1 class="portal-banner__title">Restaurant Management Suite</h1>
+                    <p class="portal-banner__subtitle">
+                        Real-time business intelligence, personnel governance, culinary menu pricing, and floor capacity orchestration.
+                    </p>
+                </div>
+                <div class="portal-banner__actions">
+                    <a href="/admin/users" class="btn btn-primary">Manage Staff &amp; Roles</a>
+                    <a href="/staff/workspace" class="btn-banner-ghost">Open Live Floor POS</a>
+                </div>
+            </section>
+
+            <!-- 4 Real-Time Executive KPI Cards -->
+            <section class="kpi-grid" th:if="${summary != null}">
+                <article class="kpi-card">
+                    <div class="kpi-card__top">
+                        <span class="kpi-card__label">Cumulative Dining Revenue</span>
+                        <span class="kpi-card__icon">₫</span>
+                    </div>
+                    <div class="kpi-card__value">
+                        <span th:text="${#numbers.formatDecimal(summary.totalRevenue, 0, 'COMMA', 0, 'POINT')}">18,450,000</span>
+                        <small style="font-size: 0.85rem;">VND</small>
+                    </div>
+                    <span class="kpi-card__trend kpi-card__trend--up" th:text="${'▲ ' + summary.totalOrders + ' Active &amp; Settled Orders'}">12 Orders</span>
+                </article>
+
+                <article class="kpi-card">
+                    <div class="kpi-card__top">
+                        <span class="kpi-card__label">Table Reservations</span>
+                        <span class="kpi-card__icon">📅</span>
+                    </div>
+                    <div class="kpi-card__value" th:text="${summary.totalReservations + ' Bookings'}">14 Bookings</div>
+                    <span class="kpi-card__trend" th:text="${summary.availableTables + ' / ' + summary.totalTables + ' Tables Available'}">4 / 8 Tables Available</span>
+                </article>
+
+                <article class="kpi-card">
+                    <div class="kpi-card__top">
+                        <span class="kpi-card__label">Culinary Menu &amp; Vouchers</span>
+                        <span class="kpi-card__icon">🍽</span>
+                    </div>
+                    <div class="kpi-card__value" th:text="${summary.availableDishes + ' / ' + summary.totalDishes + ' Dishes'}">7 / 7 Dishes</div>
+                    <span class="kpi-card__trend" th:text="${summary.activeVouchers + ' Active Promotional Vouchers'}">2 Active Vouchers</span>
+                </article>
+
+                <article class="kpi-card">
+                    <div class="kpi-card__top">
+                        <span class="kpi-card__label">System Accounts</span>
+                        <span class="kpi-card__icon">👥</span>
+                    </div>
+                    <div class="kpi-card__value" th:text="${summary.totalUsers + ' Accounts'}">4 Accounts</div>
+                    <span class="kpi-card__trend kpi-card__trend--up">Admin • Staff • Chef • Member</span>
+                </article>
+            </section>
+
+            <!-- 2-Column Executive Sidebar + Workspace -->
+            <div class="concierge-layout">
+                <!-- Left Sticky Executive Sidebar -->
+                <aside class="concierge-sidebar">
+                    <div class="vip-sidebar-card">
+                        <div class="vip-sidebar-card__top">
+                            <span class="vip-sidebar-card__brand">SAVORA</span>
+                            <span class="vip-sidebar-card__tier">EXECUTIVE ADMIN</span>
+                        </div>
+                        <div class="vip-sidebar-card__user">
+                            <img class="vip-sidebar-card__avatar"
+                                 th:src="${session.authUser != null and session.authUser.avatarUrl != null ? session.authUser.avatarUrl : 'https://res.cloudinary.com/dej5mxdrt/image/upload/v1780061324/OIP_dbbjuo.jpg'}"
+                                 alt="">
+                            <div>
+                                <div class="vip-sidebar-card__name" th:text="${session.fullName}">Quản Trị Savora</div>
+                                <div class="vip-sidebar-card__email" th:text="${session.authUser != null ? session.authUser.email : 'admin@savora.vn'}">admin@savora.vn</div>
+                            </div>
+                        </div>
+                        <div class="vip-sidebar-card__footer">
+                            <span>Full System Clearance</span>
+                            <span>● Online</span>
+                        </div>
+                    </div>
+
+                    <nav class="concierge-nav" aria-label="Admin Console Menu">
+                        <a href="/admin/dashboard" class="concierge-nav__link is-active">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                                        <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+                                    </svg>
+                                </span>
+                                <span>Executive Overview</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                        <a href="/admin/users" class="concierge-nav__link">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                    </svg>
+                                </span>
+                                <span>Staff &amp; Member Roles</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                        <a href="/admin/menu" class="concierge-nav__link">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+                                    </svg>
+                                </span>
+                                <span>Menu &amp; Dish Pricing</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                        <a href="/admin/tables" class="concierge-nav__link">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="4" width="18" height="12" rx="2"/><path d="M7 16v4M17 16v4M4 20h16"/>
+                                    </svg>
+                                </span>
+                                <span>Floor Tables &amp; Vouchers</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                <!-- Right Main Workspace -->
+                <div class="concierge-content">
+                    <!-- Recent Reservations & Orders -->
+                    <section class="portal-card">
+                        <div class="portal-card__header">
+                            <div>
+                                <span class="portal-card__eyebrow">LIVE ACTIVITY STREAM</span>
+                                <h2 class="portal-card__title">Recent Table Reservations</h2>
+                            </div>
+                            <a href="/admin/tables" class="btn btn-outline" style="padding: 8px 16px; font-size: 0.84rem;">Manage Floor Map →</a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Booking Ref</th>
+                                        <th>Guest &amp; Phone</th>
+                                        <th>Table &amp; Zone</th>
+                                        <th>Date &amp; 120m Window</th>
+                                        <th>Guests</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="r : ${recentReservations}">
+                                        <td><code th:text="${'#' + r.reservationCode}">#RES-101</code></td>
+                                        <td>
+                                            <strong th:text="${r.customerName}">Guest</strong>
+                                            <span class="user-cell__sub" style="display: block;" th:text="${r.customerPhone}">0901000002</span>
+                                        </td>
+                                        <td>
+                                            <strong th:text="${r.tableCode}">T1-B01</strong>
+                                            <span class="user-cell__sub" style="display: block;" th:text="${r.area}">Tầng 1</span>
+                                        </td>
+                                        <td th:text="${r.reservationDate + ' (' + r.reservationTime + ' – ' + r.endTime + ')'}">2026-11-17</td>
+                                        <td th:text="${r.guestCount + ' Seats'}">2 Seats</td>
+                                        <td>
+                                            <span class="pill"
+                                                  th:classappend="${r.status == 'CONFIRMED' ? 'pill-status-ACTIVE' : (r.status == 'CANCELLED' ? 'pill-status-LOCKED' : 'pill-status-PENDING')}"
+                                                  th:text="${'● ' + r.status}">● CONFIRMED</span>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(recentReservations)}">
+                                        <td colspan="6" style="text-align: center; padding: 26px; color: var(--text-muted);">
+                                            No reservations recorded yet. Bookings placed by customers will appear here automatically.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- Role-Based Access Control Matrix -->
+                    <section class="portal-card">
+                        <div class="portal-card__header">
+                            <div>
+                                <span class="portal-card__eyebrow">SECURITY &amp; GOVERNANCE</span>
+                                <h2 class="portal-card__title">Role-Based Access Control Matrix</h2>
+                            </div>
+                            <span class="pill pill-status-ACTIVE">● Enforced Policy</span>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Functional Domain</th>
+                                        <th>Operational Capability / Task</th>
+                                        <th style="text-align: center;">Guest</th>
+                                        <th style="text-align: center;">Member (Customer)</th>
+                                        <th style="text-align: center;">Floor &amp; Kitchen (Staff / Chef)</th>
+                                        <th style="text-align: center;">Executive Admin</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Public Experience</strong></td>
+                                        <td>Browse Seasonal Menu, Live Floor Availability &amp; Concierge Info</td>
+                                        <td style="text-align: center;">✅</td>
+                                        <td style="text-align: center;">✅</td>
+                                        <td style="text-align: center;">✅</td>
+                                        <td style="text-align: center;">✅</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Authentication</strong></td>
+                                        <td>Account Registration, Email Sign-In &amp; Google / Facebook OAuth2</td>
+                                        <td style="text-align: center;">✅</td>
+                                        <td style="text-align: center;">✅</td>
+                                        <td style="text-align: center;">✅</td>
+                                        <td style="text-align: center;">✅</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Member Concierge</strong></td>
+                                        <td>Manage Personal Profile, Dining History &amp; Exclusive Vouchers</td>
+                                        <td style="text-align: center;">—</td>
+                                        <td style="text-align: center;">✅</td>
+                                        <td style="text-align: center;">✅</td>
+                                        <td style="text-align: center;">✅</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Table Reservations</strong></td>
+                                        <td>Online Table Booking (120-Minute Slot), Pre-Order &amp; Reviews</td>
+                                        <td style="text-align: center;">—</td>
+                                        <td style="text-align: center;">✅</td>
+                                        <td style="text-align: center;">—</td>
+                                        <td style="text-align: center;">✅</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Floor &amp; Kitchen POS</strong></td>
+                                        <td>Guest Check-In, Live Table Status Control &amp; Kitchen Dish Queue</td>
+                                        <td style="text-align: center;">—</td>
+                                        <td style="text-align: center;">—</td>
+                                        <td style="text-align: center;">✅</td>
+                                        <td style="text-align: center;">✅</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Executive Administration</strong></td>
+                                        <td>Staff &amp; Role Governance, Menu Pricing CRUD, Tables &amp; Vouchers</td>
+                                        <td style="text-align: center;">—</td>
+                                        <td style="text-align: center;">—</td>
+                                        <td style="text-align: center;">—</td>
+                                        <td style="text-align: center;">✅</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/footer :: siteFooter}"></div>
+    <script src="/assets/js/common/api.js"></script>
+</body>
+</html>

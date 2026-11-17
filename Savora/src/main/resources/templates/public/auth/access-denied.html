@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restricted Area — Savora Fine Dining &amp; Restaurant</title>
+    <script src="/assets/js/common/theme.js"></script>
+    <link rel="stylesheet" href="/assets/css/public/global.css?v=4">
+    <link rel="stylesheet" href="/assets/css/public/home.css?v=4">
+    <link rel="stylesheet" href="/assets/css/public/portal.css?v=4">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: siteHeader}"></div>
+
+    <main class="portal-main" style="display: flex; align-items: center;">
+        <div class="container">
+            <div class="portal-card" style="max-width: 640px; margin: 0 auto; text-align: center; padding: 48px 36px;">
+                <span class="portal-card__eyebrow" style="color: var(--danger-color);">RESTRICTED WORKSPACE</span>
+                <h1 style="font-family: var(--font-heading); font-size: 2.2rem; margin: 8px 0 14px;">Authorized Personnel Only</h1>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 26px;">
+                    Your current account does not have clearance to view this internal management section. Please return to the main dining lounge or sign in with an authorized account.
+                </p>
+                <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+                    <a href="/home" class="btn btn-primary">Return to Savora Home</a>
+                    <a href="/customer/profile" th:if="${session.userId != null}" class="btn btn-outline">My Account</a>
+                    <a href="/login" th:if="${session.userId == null}" class="btn btn-outline">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/footer :: siteFooter}"></div>
+    <script src="/assets/js/common/api.js"></script>
+</body>
+</html>

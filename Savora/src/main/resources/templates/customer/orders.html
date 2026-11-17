@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders &amp; Reviews — Savora Fine Dining</title>
+    <script src="/assets/js/common/theme.js"></script>
+    <link rel="stylesheet" href="/assets/css/public/global.css?v=6">
+    <link rel="stylesheet" href="/assets/css/public/home.css?v=6">
+    <link rel="stylesheet" href="/assets/css/public/portal.css?v=6">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: siteHeader}"></div>
+
+    <main class="portal-main">
+        <div class="container">
+            <!-- Top Banner -->
+            <section class="portal-banner">
+                <div>
+                    <span class="portal-banner__eyebrow">✦ CULINARY PRE-ORDER &amp; FEEDBACK</span>
+                    <h1 class="portal-banner__title">My Orders &amp; Dining Reviews</h1>
+                    <p class="portal-banner__subtitle">
+                        Select from our chef’s signature menu below, apply your privilege voucher code, and preview your live bill calculation before submitting.
+                    </p>
+                </div>
+                <div class="portal-banner__actions">
+                    <a href="/customer/reservations" class="btn-banner-ghost">View My Reservations</a>
+                </div>
+            </section>
+
+            <!-- Feedback Alerts -->
+            <div class="portal-alert portal-alert--success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="portal-alert portal-alert--error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <!-- 2-Column Concierge Sidebar + Workspace -->
+            <div class="concierge-layout">
+                <!-- Left Sticky Concierge Sidebar -->
+                <aside class="concierge-sidebar">
+                    <div class="vip-sidebar-card">
+                        <div class="vip-sidebar-card__top">
+                            <span class="vip-sidebar-card__brand">SAVORA</span>
+                            <span class="vip-sidebar-card__tier" th:text="${session.roleName + ' PRIVILEGE'}">CUSTOMER PRIVILEGE</span>
+                        </div>
+                        <div class="vip-sidebar-card__user">
+                            <img class="vip-sidebar-card__avatar"
+                                 th:src="${session.authUser != null and session.authUser.avatarUrl != null ? session.authUser.avatarUrl : 'https://res.cloudinary.com/dej5mxdrt/image/upload/v1780061324/OIP_dbbjuo.jpg'}"
+                                 alt="">
+                            <div>
+                                <div class="vip-sidebar-card__name" th:text="${session.fullName}">Member Name</div>
+                                <div class="vip-sidebar-card__email" th:text="${session.authUser != null ? session.authUser.email : ''}">member@savora.vn</div>
+                            </div>
+                        </div>
+                        <div class="vip-sidebar-card__footer">
+                            <span>SAVORA10 • 10% OFF</span>
+                            <span>WELCOME50 • 15% OFF</span>
+                        </div>
+                    </div>
+
+                    <nav class="concierge-nav" aria-label="Member Portal Menu">
+                        <a href="/customer/profile" class="concierge-nav__link">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                                    </svg>
+                                </span>
+                                <span>Account &amp; Vouchers</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                        <a href="/customer/reservations" class="concierge-nav__link">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+                                    </svg>
+                                </span>
+                                <span>Table Reservations</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                        <a href="/customer/orders" class="concierge-nav__link is-active">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                                    </svg>
+                                </span>
+                                <span>Pre-Orders &amp; Reviews</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                <!-- Right Main Workspace -->
+                <div class="concierge-content">
+                    <!-- 1. Interactive Dish Picker & Pre-Order Form -->
+                    <section class="portal-card">
+                        <div class="portal-card__header">
+                            <div>
+                                <span class="portal-card__eyebrow">CHEF’S SIGNATURE MENU</span>
+                                <h2 class="portal-card__title">Interactive Pre-Order &amp; Takeaway</h2>
+                            </div>
+                            <span class="pill pill-status-ACTIVE">● Live Bill Calculator</span>
+                        </div>
+
+                        <!-- Visual Dish Cards Grid -->
+                        <div class="dish-picker-grid" id="visual-dish-grid">
+                            <div class="dish-picker-card" th:each="d : ${dishes}"
+                                 th:with="unitPrice=${d.discountPrice != null ? d.discountPrice : d.price}"
+                                 th:attr="data-id=${d.dishId},data-price=${unitPrice},data-name=${d.dishName}">
+                                <img class="dish-picker-card__img"
+                                     th:src="${d.thumbnailUrl != null ? d.thumbnailUrl : 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'}"
+                                     alt="">
+                                <div class="dish-picker-card__info">
+                                    <div class="dish-picker-card__title" th:text="${d.dishName}">Dish Name</div>
+                                    <div class="dish-picker-card__price" th:text="${#numbers.formatDecimal(unitPrice, 0, 'COMMA', 0, 'POINT') + ' VND'}">149,000 VND</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form method="post" th:action="@{/customer/orders/create}" th:object="${orderForm}" novalidate>
+                            <div class="portal-form-grid">
+                                <div class="portal-form-group portal-form-group--full">
+                                    <label for="dishId">Selected Signature Dish *</label>
+                                    <select id="dishId" th:field="*{dishId}" class="portal-form-control" required>
+                                        <option value="" data-price="0">-- Click a dish card above or select here --</option>
+                                        <option th:each="d : ${dishes}"
+                                                th:with="unitPrice=${d.discountPrice != null ? d.discountPrice : d.price}"
+                                                th:value="${d.dishId}"
+                                                th:attr="data-price=${unitPrice}"
+                                                th:text="${d.dishName + ' — ' + #numbers.formatDecimal(unitPrice, 0, 'COMMA', 0, 'POINT') + ' VND'}">
+                                            Signature Dish
+                                        </option>
+                                    </select>
+                                    <small class="field-error" th:if="${#fields.hasErrors('dishId')}" th:errors="*{dishId}"></small>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label for="quantity">Portion Quantity *</label>
+                                    <input type="number" id="quantity" th:field="*{quantity}" min="1" max="20" class="portal-form-control" required>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label for="orderType">Dining Mode *</label>
+                                    <select id="orderType" th:field="*{orderType}" class="portal-form-control">
+                                        <option value="PRE_ORDER">Pre-Order for Reserved Table</option>
+                                        <option value="TAKEAWAY">Luxury Takeaway Packaging</option>
+                                    </select>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label for="reservationId">Link to Table Reservation (Optional)</label>
+                                    <select id="reservationId" th:field="*{reservationId}" class="portal-form-control">
+                                        <option value="">-- Standalone / Takeaway Order --</option>
+                                        <option th:each="r : ${reservations}"
+                                                th:if="${r.status == 'CONFIRMED' or r.status == 'PENDING'}"
+                                                th:value="${r.reservationId}"
+                                                th:text="${'#' + r.reservationCode + ' (' + r.tableCode + ' • ' + r.reservationDate + ' ' + r.reservationTime + ')'}">
+                                            #RES-101
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label for="voucherCode">Privilege Voucher Code</label>
+                                    <input type="text" id="voucherCode" th:field="*{voucherCode}" class="portal-form-control" placeholder="Click a voucher below or type code">
+                                    <div class="time-slot-pills">
+                                        <button type="button" class="time-slot-pill voucher-pill" data-code="SAVORA10">SAVORA10 (10%)</button>
+                                        <button type="button" class="time-slot-pill voucher-pill" data-code="WELCOME50">WELCOME50 (15%)</button>
+                                        <button type="button" class="time-slot-pill voucher-pill" data-code="">No Voucher</button>
+                                    </div>
+                                </div>
+
+                                <div class="portal-form-group portal-form-group--full">
+                                    <label for="note">Culinary Note for Executive Chef</label>
+                                    <input type="text" id="note" th:field="*{note}" class="portal-form-control" placeholder="e.g. Medium-rare steak, less spicy, no cilantro...">
+                                </div>
+                            </div>
+
+                            <!-- Live Order Receipt Preview -->
+                            <div class="receipt-box">
+                                <div class="receipt-row">
+                                    <span>Estimated Subtotal</span>
+                                    <strong id="calc-subtotal">0 VND</strong>
+                                </div>
+                                <div class="receipt-row">
+                                    <span>Privilege Voucher Discount</span>
+                                    <strong id="calc-discount" style="color: var(--success-color);">-0 VND</strong>
+                                </div>
+                                <div class="receipt-row">
+                                    <span>VAT &amp; Service Charge (8%)</span>
+                                    <strong id="calc-tax">0 VND</strong>
+                                </div>
+                                <div class="receipt-row receipt-row--total">
+                                    <span>Estimated Grand Total</span>
+                                    <strong id="calc-total">0 VND</strong>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 13px 24px;">
+                                Confirm &amp; Place Culinary Order
+                            </button>
+                        </form>
+                    </section>
+
+                    <!-- 2. My Orders & Billing History -->
+                    <section class="portal-card">
+                        <div class="portal-card__header">
+                            <div>
+                                <span class="portal-card__eyebrow">ORDER TRACKING &amp; BILLING</span>
+                                <h2 class="portal-card__title">My Culinary Orders</h2>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Order Ref</th>
+                                        <th>Mode / Table</th>
+                                        <th>Ordered Dishes &amp; Kitchen Status</th>
+                                        <th>Subtotal</th>
+                                        <th>Discount</th>
+                                        <th>Total (+8% VAT)</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="o : ${orders}">
+                                        <td><code th:text="${'#' + o.orderCode}">#ORD-101</code></td>
+                                        <td>
+                                            <span class="pill pill-role-STAFF" th:text="${o.orderType}">PRE_ORDER</span>
+                                            <small th:if="${o.tableCode != null}" style="display: block; margin-top: 4px; color: var(--text-muted);" th:text="${'Table: ' + o.tableCode}">T1-B01</small>
+                                        </td>
+                                        <td>
+                                            <div th:each="it : ${o.items}" style="margin-bottom: 4px;">
+                                                <strong th:text="${it.quantity + 'x ' + it.dishName}">1x Dish</strong>
+                                                <span class="pill pill-status-PENDING" style="font-size: 0.65rem; padding: 2px 7px;" th:text="${it.itemStatus}">PENDING</span>
+                                            </div>
+                                        </td>
+                                        <td th:text="${#numbers.formatDecimal(o.subtotalAmount, 0, 'COMMA', 0, 'POINT') + ' VND'}">0 VND</td>
+                                        <td style="color: var(--success-color); font-weight: 600;"
+                                            th:text="${'-' + #numbers.formatDecimal(o.discountAmount, 0, 'COMMA', 0, 'POINT') + ' VND'}">-0 VND</td>
+                                        <td><strong th:text="${#numbers.formatDecimal(o.totalAmount, 0, 'COMMA', 0, 'POINT') + ' VND'}">0 VND</strong></td>
+                                        <td>
+                                            <span class="pill pill-status-ACTIVE" th:text="${'● ' + o.status}">● OPEN</span>
+                                        </td>
+                                    </tr>
+
+                                    <tr th:if="${#lists.isEmpty(orders)}">
+                                        <td colspan="7" style="text-align: center; padding: 32px; color: var(--text-muted);">
+                                            You have not placed any pre-orders or takeaway orders yet. Click a dish card above to start!
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- 3. Rate Your Dining Experience -->
+                    <section class="portal-card">
+                        <div class="portal-card__header">
+                            <div>
+                                <span class="portal-card__eyebrow">GUEST FEEDBACK</span>
+                                <h2 class="portal-card__title">Share Your Dining Review</h2>
+                            </div>
+                            <span class="pill pill-role-CHEF">★ 1 – 5 Stars</span>
+                        </div>
+
+                        <form method="post" th:action="@{/customer/reviews/create}" th:object="${reviewForm}" novalidate>
+                            <div class="portal-form-grid">
+                                <div class="portal-form-group">
+                                    <label for="rev-dishId">Dish Reviewed (Optional)</label>
+                                    <select id="rev-dishId" th:field="*{dishId}" class="portal-form-control">
+                                        <option value="">-- General Restaurant &amp; Service Review --</option>
+                                        <option th:each="d : ${dishes}" th:value="${d.dishId}" th:text="${d.dishName}">Dish</option>
+                                    </select>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label for="rating">Star Rating *</label>
+                                    <select id="rating" th:field="*{rating}" class="portal-form-control" required>
+                                        <option value="5">★★★★★ (5 — Exceptional)</option>
+                                        <option value="4">★★★★☆ (4 — Very Good)</option>
+                                        <option value="3">★★★☆☆ (3 — Good)</option>
+                                        <option value="2">★★☆☆☆ (2 — Fair)</option>
+                                        <option value="1">★☆☆☆☆ (1 — Needs Improvement)</option>
+                                    </select>
+                                </div>
+
+                                <div class="portal-form-group portal-form-group--full">
+                                    <label for="comment">Your Review &amp; Tasting Notes *</label>
+                                    <textarea id="comment" th:field="*{comment}" rows="3" class="portal-form-control"
+                                              placeholder="Share your thoughts on our culinary presentation, flavor balance, and table hospitality..." required></textarea>
+                                    <small class="field-error" th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}"></small>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-outline" style="margin-top: 4px;">
+                                Publish Guest Review
+                            </button>
+                        </form>
+
+                        <div class="ticket-list" th:if="${!#lists.isEmpty(reviews)}" style="margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border-color);">
+                            <div class="ticket-item" th:each="rev : ${reviews}">
+                                <div>
+                                    <div class="ticket-item__meta">
+                                        <span th:text="${rev.dishName != null ? rev.dishName : 'Savora Restaurant Experience'}">Dish</span>
+                                    </div>
+                                    <div class="ticket-item__dish" th:text="${rev.comment}">Great food!</div>
+                                </div>
+                                <span class="pill pill-role-CHEF" th:text="${rev.rating + ' ★'}">5 ★</span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/footer :: siteFooter}"></div>
+    <script src="/assets/js/common/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dishSelect = document.getElementById('dishId');
+            const qtyInput = document.getElementById('quantity');
+            const voucherInput = document.getElementById('voucherCode');
+            const dishCards = document.querySelectorAll('.dish-picker-card');
+            const voucherPills = document.querySelectorAll('.voucher-pill');
+
+            function formatVnd(n) {
+                return Math.round(n).toLocaleString('en-US') + ' VND';
+            }
+
+            function recalculateBill() {
+                const selectedOpt = dishSelect?.options[dishSelect.selectedIndex];
+                const unitPrice = Number(selectedOpt?.getAttribute('data-price') || 0);
+                const qty = Math.max(1, Number(qtyInput?.value || 1));
+                const subtotal = unitPrice * qty;
+
+                const code = (voucherInput?.value || '').trim().toUpperCase();
+                let discount = 0;
+                if (code === 'SAVORA10' && subtotal >= 500000) {
+                    discount = Math.min(subtotal * 0.10, 100000);
+                } else if (code === 'WELCOME50' && subtotal >= 300000) {
+                    discount = Math.min(subtotal * 0.15, 150000);
+                }
+
+                const taxable = Math.max(0, subtotal - discount);
+                const tax = taxable * 0.08;
+                const total = taxable + tax;
+
+                document.getElementById('calc-subtotal').textContent = formatVnd(subtotal);
+                document.getElementById('calc-discount').textContent = '-' + formatVnd(discount);
+                document.getElementById('calc-tax').textContent = formatVnd(tax);
+                document.getElementById('calc-total').textContent = formatVnd(total);
+
+                dishCards.forEach(c => {
+                    c.classList.toggle('is-selected', c.dataset.id === dishSelect?.value);
+                });
+            }
+
+            dishCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    if (dishSelect) {
+                        dishSelect.value = card.dataset.id;
+                        recalculateBill();
+                    }
+                });
+            });
+
+            voucherPills.forEach(pill => {
+                pill.addEventListener('click', () => {
+                    voucherPills.forEach(p => p.classList.remove('is-active'));
+                    pill.classList.add('is-active');
+                    if (voucherInput) {
+                        voucherInput.value = pill.dataset.code;
+                        recalculateBill();
+                    }
+                });
+            });
+
+            dishSelect?.addEventListener('change', recalculateBill);
+            qtyInput?.addEventListener('input', recalculateBill);
+            voucherInput?.addEventListener('input', recalculateBill);
+            recalculateBill();
+        });
+    </script>
+</body>
+</html>

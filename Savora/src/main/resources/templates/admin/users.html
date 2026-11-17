@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff &amp; Member Governance — Savora Administration</title>
+    <script src="/assets/js/common/theme.js"></script>
+    <link rel="stylesheet" href="/assets/css/public/global.css?v=7">
+    <link rel="stylesheet" href="/assets/css/public/home.css?v=7">
+    <link rel="stylesheet" href="/assets/css/public/portal.css?v=7">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: siteHeader}"></div>
+
+    <main class="portal-main">
+        <div class="container">
+            <section class="portal-banner">
+                <div>
+                    <span class="portal-banner__eyebrow">✦ IDENTITY &amp; ACCESS GOVERNANCE</span>
+                    <h1 class="portal-banner__title">Staff &amp; Member Directory</h1>
+                    <p class="portal-banner__subtitle">
+                        Onboard new restaurant personnel, assign role permissions (Admin, Staff, Chef, Customer), and control account lock states.
+                    </p>
+                </div>
+                <div class="portal-banner__actions">
+                    <a href="/admin/dashboard" class="btn-banner-ghost">← Back to Overview</a>
+                </div>
+            </section>
+
+            <div class="portal-alert portal-alert--success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="portal-alert portal-alert--error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+            <div class="concierge-layout">
+                <!-- Left Sticky Executive Sidebar -->
+                <aside class="concierge-sidebar">
+                    <div class="vip-sidebar-card">
+                        <div class="vip-sidebar-card__top">
+                            <span class="vip-sidebar-card__brand">SAVORA</span>
+                            <span class="vip-sidebar-card__tier">EXECUTIVE ADMIN</span>
+                        </div>
+                        <div class="vip-sidebar-card__user">
+                            <img class="vip-sidebar-card__avatar"
+                                 th:src="${session.authUser != null and session.authUser.avatarUrl != null ? session.authUser.avatarUrl : 'https://res.cloudinary.com/dej5mxdrt/image/upload/v1780061324/OIP_dbbjuo.jpg'}"
+                                 alt="">
+                            <div>
+                                <div class="vip-sidebar-card__name" th:text="${session.fullName}">Quản Trị Savora</div>
+                                <div class="vip-sidebar-card__email" th:text="${session.authUser != null ? session.authUser.email : 'admin@savora.vn'}">admin@savora.vn</div>
+                            </div>
+                        </div>
+                        <div class="vip-sidebar-card__footer">
+                            <span>Personnel &amp; Roles</span>
+                            <span>● Active</span>
+                        </div>
+                    </div>
+
+                    <nav class="concierge-nav" aria-label="Admin Console Menu">
+                        <a href="/admin/dashboard" class="concierge-nav__link">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                                        <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+                                    </svg>
+                                </span>
+                                <span>Executive Overview</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                        <a href="/admin/users" class="concierge-nav__link is-active">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                    </svg>
+                                </span>
+                                <span>Staff &amp; Member Roles</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                        <a href="/admin/menu" class="concierge-nav__link">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>
+                                    </svg>
+                                </span>
+                                <span>Menu &amp; Dish Pricing</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                        <a href="/admin/tables" class="concierge-nav__link">
+                            <span class="concierge-nav__left">
+                                <span class="concierge-nav__icon">
+                                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="4" width="18" height="12" rx="2"/><path d="M7 16v4M17 16v4M4 20h16"/>
+                                    </svg>
+                                </span>
+                                <span>Floor Tables &amp; Vouchers</span>
+                            </span>
+                            <span>→</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                <!-- Right Main Workspace -->
+                <div class="concierge-content">
+                    <!-- 1. Create New Staff / User Account -->
+                    <section class="portal-card">
+                        <div class="portal-card__header">
+                            <div>
+                                <span class="portal-card__eyebrow">ONBOARDING</span>
+                                <h2 class="portal-card__title">Create New Staff or Member Account</h2>
+                            </div>
+                            <span class="pill pill-role-ADMIN">Admin Provisioning</span>
+                        </div>
+
+                        <form method="post" th:action="@{/admin/users/create}" th:object="${createUserForm}" novalidate>
+                            <div class="portal-form-grid">
+                                <div class="portal-form-group">
+                                    <label for="firstName">First Name *</label>
+                                    <input type="text" id="firstName" th:field="*{firstName}" class="portal-form-control" placeholder="e.g. Hoàng" required>
+                                    <small class="field-error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></small>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label for="lastName">Last Name *</label>
+                                    <input type="text" id="lastName" th:field="*{lastName}" class="portal-form-control" placeholder="e.g. Nguyễn" required>
+                                    <small class="field-error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></small>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label for="email">Email Address *</label>
+                                    <input type="email" id="email" th:field="*{email}" class="portal-form-control" placeholder="staff2@savora.vn" required>
+                                    <small class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label for="phone">Phone Number *</label>
+                                    <input type="tel" id="phone" th:field="*{phone}" class="portal-form-control" placeholder="0901234567" required>
+                                    <small class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></small>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label for="roleName">Assign Security Role *</label>
+                                    <select id="roleName" th:field="*{roleName}" class="portal-form-control">
+                                        <option value="STAFF">STAFF — Floor &amp; Cashier</option>
+                                        <option value="CHEF">CHEF — Culinary Kitchen</option>
+                                        <option value="ADMIN">ADMIN — Executive Administrator</option>
+                                        <option value="CUSTOMER">CUSTOMER — Dining Member</option>
+                                    </select>
+                                </div>
+
+                                <div class="portal-form-group">
+                                    <label for="password">Initial Password *</label>
+                                    <input type="password" id="password" th:field="*{password}" class="portal-form-control" placeholder="Min. 6 characters" required>
+                                    <small class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="margin-top: 6px;">+ Provision Account</button>
+                        </form>
+                    </section>
+
+                    <!-- 2. Staff & Member Directory Table with Role & Lock Actions -->
+                    <section class="portal-card">
+                        <div class="portal-card__header">
+                            <div>
+                                <span class="portal-card__eyebrow">ACCOUNT DIRECTORY</span>
+                                <h2 class="portal-card__title">Registered System Accounts</h2>
+                            </div>
+                            <div class="portal-toolbar">
+                                <input type="text" id="user-search-input" class="portal-input" placeholder="Search name, email, phone...">
+                                <select id="user-role-filter" class="portal-select">
+                                    <option value="ALL">All Roles</option>
+                                    <option value="ADMIN">Admin</option>
+                                    <option value="STAFF">Staff</option>
+                                    <option value="CHEF">Chef</option>
+                                    <option value="CUSTOMER">Customer</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="data-table" id="user-directory-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Account Holder</th>
+                                        <th>Phone</th>
+                                        <th>Role Assignment</th>
+                                        <th>Status</th>
+                                        <th>Governance Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="u : ${users}"
+                                        th:attr="data-role=${u.roleName},data-search=${(u.fullName + ' ' + u.email + ' ' + (u.phone != null ? u.phone : '')).toLowerCase()}">
+                                        <td><code th:text="${'#' + u.userId}">#1</code></td>
+                                        <td>
+                                            <div class="user-cell">
+                                                <img class="user-cell__avatar"
+                                                     th:src="${u.avatarUrl != null ? u.avatarUrl : 'https://res.cloudinary.com/dej5mxdrt/image/upload/v1780061324/OIP_dbbjuo.jpg'}"
+                                                     alt="">
+                                                <div>
+                                                    <span class="user-cell__name" th:text="${u.fullName}">User Name</span>
+                                                    <span class="user-cell__sub" th:text="${u.email}">user@savora.vn</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td th:text="${u.phone != null ? u.phone : '—'}">0901000001</td>
+                                        <td>
+                                            <form method="post" th:action="@{'/admin/users/' + ${u.userId} + '/role'}" style="display: inline-flex; gap: 6px; align-items: center; margin: 0;">
+                                                <select name="roleName" class="portal-select" style="padding: 5px 10px; font-size: 0.78rem;">
+                                                    <option value="ADMIN" th:selected="${u.roleName == 'ADMIN'}">ADMIN</option>
+                                                    <option value="STAFF" th:selected="${u.roleName == 'STAFF'}">STAFF</option>
+                                                    <option value="CHEF" th:selected="${u.roleName == 'CHEF'}">CHEF</option>
+                                                    <option value="CUSTOMER" th:selected="${u.roleName == 'CUSTOMER'}">CUSTOMER</option>
+                                                </select>
+                                                <button type="submit" class="btn-xs btn-xs--primary">Save</button>
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <span class="pill" th:classappend="${'pill-status-' + u.status}" th:text="${'● ' + u.status}">● ACTIVE</span>
+                                        </td>
+                                        <td>
+                                            <form th:if="${u.userId != session.userId}"
+                                                  method="post"
+                                                  th:action="@{'/admin/users/' + ${u.userId} + '/toggle-status'}"
+                                                  style="margin: 0;">
+                                                <button type="submit" class="btn-xs"
+                                                        th:text="${u.status == 'LOCKED' ? 'Activate Account' : 'Lock Account'}"
+                                                        th:style="${u.status == 'LOCKED' ? 'color: var(--success-color); border-color: var(--success-color);' : 'color: var(--danger-color); border-color: var(--danger-color);'}">
+                                                    Lock Account
+                                                </button>
+                                            </form>
+                                            <span th:if="${u.userId == session.userId}" style="font-size: 0.78rem; color: var(--text-muted);">Current Session</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div th:replace="~{fragments/footer :: siteFooter}"></div>
+    <script src="/assets/js/common/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('user-search-input');
+            const roleSelect = document.getElementById('user-role-filter');
+            const rows = document.querySelectorAll('#user-directory-table tbody tr');
+
+            function filterUsers() {
+                const keyword = (searchInput?.value || '').trim().toLowerCase();
+                const role = roleSelect?.value || 'ALL';
+                rows.forEach(row => {
+                    const rowRole = row.getAttribute('data-role') || '';
+                    const rowSearch = row.getAttribute('data-search') || '';
+                    const matchesRole = role === 'ALL' || rowRole === role;
+                    const matchesKeyword = !keyword || rowSearch.includes(keyword);
+                    row.style.display = (matchesRole && matchesKeyword) ? '' : 'none';
+                });
+            }
+
+            searchInput?.addEventListener('input', filterUsers);
+            roleSelect?.addEventListener('change', filterUsers);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,865 @@
+/* ===== SAVORA PORTAL & CONCIERGE SUITE STYLES (assets/css/public/portal.css) ===== */
+
+.portal-main {
+    flex: 1;
+    padding: 36px 0 80px;
+}
+
+/* ===== Portal Top Banner ===== */
+.portal-banner {
+    background:
+        linear-gradient(125deg, rgba(20, 15, 12, 0.94) 0%, rgba(43, 30, 22, 0.90) 58%, rgba(68, 39, 23, 0.88) 100%),
+        url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=80');
+    background-size: cover;
+    background-position: center;
+    border-radius: 24px;
+    padding: 36px 40px;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(222, 179, 124, 0.34);
+}
+
+.portal-banner__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 13px;
+    border-radius: 999px;
+    background: rgba(243, 198, 143, 0.16);
+    border: 1px solid rgba(243, 198, 143, 0.42);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: #f3c68f;
+    margin-bottom: 12px;
+}
+
+.portal-banner__title {
+    font-family: var(--font-heading);
+    font-size: 2.25rem;
+    line-height: 1.18;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.portal-banner__subtitle {
+    font-size: 0.94rem;
+    color: rgba(255, 255, 255, 0.80);
+    max-width: 620px;
+}
+
+.portal-banner__actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn-banner-ghost {
+    padding: 11px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(243, 198, 143, 0.45);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    color: #f3c68f;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.btn-banner-ghost:hover {
+    background: rgba(243, 198, 143, 0.22);
+    color: #ffffff;
+}
+
+/* ===== 2-Column Concierge Sidebar + Workspace Layout ===== */
+.concierge-layout {
+    display: grid;
+    grid-template-columns: 310px minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
+}
+
+.concierge-sidebar {
+    position: sticky;
+    top: 104px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.concierge-content {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    min-width: 0;
+}
+
+/* Sidebar Member Card */
+.vip-sidebar-card {
+    background: linear-gradient(145deg, #1b1511 0%, #2f2118 55%, #432b1c 100%);
+    color: #ffffff;
+    border-radius: 22px;
+    padding: 24px;
+    border: 1px solid rgba(243, 198, 143, 0.38);
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.vip-sidebar-card::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(243, 198, 143, 0.22) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.vip-sidebar-card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.vip-sidebar-card__brand {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 2.2px;
+    color: #f3c68f;
+}
+
+.vip-sidebar-card__tier {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(243, 198, 143, 0.18);
+    border: 1px solid rgba(243, 198, 143, 0.48);
+    color: #f3c68f;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.vip-sidebar-card__user {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.vip-sidebar-card__avatar {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #f3c68f;
+    flex-shrink: 0;
+}
+
+.vip-sidebar-card__name {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    color: #ffffff;
+    line-height: 1.2;
+}
+
+.vip-sidebar-card__email {
+    font-size: 0.78rem;
+    color: #d0c3b4;
+    word-break: break-all;
+}
+
+.vip-sidebar-card__footer {
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.76rem;
+    color: #cfc2b2;
+}
+
+/* Sidebar Navigation Menu */
+.concierge-nav {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 10px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.concierge-nav__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-radius: 13px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+.concierge-nav__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.concierge-nav__icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--subtle-surface);
+    color: var(--primary-color);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.concierge-nav__link:hover {
+    background: var(--subtle-surface);
+    color: var(--text-main);
+}
+
+.concierge-nav__link.is-active {
+    background: linear-gradient(135deg, #c25c31 0%, #8f3d1a 100%);
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(180, 83, 42, 0.25);
+}
+
+.concierge-nav__link.is-active .concierge-nav__icon {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+}
+
+/* ===== Interactive Table Selector Cards (/customer/reservations) ===== */
+.selectable-table-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.selectable-table-card {
+    padding: 16px;
+    border-radius: 16px;
+    border: 1.5px solid var(--border-color);
+    background: var(--input-surface);
+    cursor: pointer;
+    transition: all 0.22s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+    position: relative;
+}
+
+.selectable-table-card:hover {
+    border-color: var(--gold-accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.selectable-table-card.is-selected {
+    border-color: var(--primary-color);
+    background: var(--gold-soft);
+    box-shadow: 0 0 0 3px rgba(180, 83, 42, 0.15);
+}
+
+.selectable-table-card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selectable-table-card__code {
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+
+.selectable-table-card__seats {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.selectable-table-card__name {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    color: var(--text-main);
+}
+
+.selectable-table-card__zone {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+/* Time Slot Quick Buttons */
+.time-slot-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.time-slot-pill {
+    padding: 7px 13px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-white);
+    color: var(--text-main);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.time-slot-pill:hover,
+.time-slot-pill.is-active {
+    background: var(--brand-fill);
+    border-color: var(--brand-fill);
+    color: #ffffff;
+}
+
+/* ===== Visual Dish Picker & Live Receipt (/customer/orders) ===== */
+.dish-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+    max-height: 410px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.dish-picker-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px;
+    border-radius: 14px;
+    border: 1.5px solid var(--border-color);
+    background: var(--input-surface);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dish-picker-card:hover {
+    border-color: var(--gold-accent);
+    transform: translateY(-1px);
+}
+
+.dish-picker-card.is-selected {
+    border-color: var(--primary-color);
+    background: var(--gold-soft);
+    box-shadow: 0 0 0 3px rgba(180, 83, 42, 0.14);
+}
+
+.dish-picker-card__img {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.dish-picker-card__info {
+    min-width: 0;
+    flex: 1;
+}
+
+.dish-picker-card__title {
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1.3;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.dish-picker-card__price {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Live Order Receipt Summary Box */
+.receipt-box {
+    background: var(--subtle-surface);
+    border: 1px dashed var(--border-strong);
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin: 14px 0 18px;
+}
+
+.receipt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.receipt-row--total {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.receipt-row--total strong {
+    color: var(--primary-color);
+}
+
+/* ===== Portal Form Layouts ===== */
+.portal-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.portal-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.portal-form-group--full {
+    grid-column: 1 / -1;
+}
+
+.portal-form-group label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.portal-form-control {
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: 11px;
+    border: 1.5px solid var(--border-color);
+    background: var(--input-surface);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.portal-form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: var(--bg-white);
+    box-shadow: 0 0 0 3px rgba(180, 83, 42, 0.12);
+}
+
+.portal-alert {
+    padding: 14px 18px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.portal-alert--success {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    color: #166534;
+}
+
+.portal-alert--error {
+    background: #fff1f0;
+    border: 1px solid #ffa39e;
+    color: #cf1322;
+}
+
+[data-theme="dark"] .portal-alert--success {
+    background: #14301f;
+    border-color: #2e7d32;
+    color: #a7f3d0;
+}
+
+[data-theme="dark"] .portal-alert--error {
+    background: #39211f;
+    border-color: #9d514b;
+    color: #ffb8ae;
+}
+
+/* ===== KPI Cards Grid ===== */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.kpi-card {
+    background: var(--bg-white);
+    border-radius: 20px;
+    padding: 22px 24px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-card::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--primary-color), var(--gold-accent));
+}
+
+.kpi-card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.kpi-card__label {
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+}
+
+.kpi-card__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--gold-soft);
+    color: var(--primary-color);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+}
+
+.kpi-card__value {
+    font-family: var(--font-heading);
+    font-size: 1.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.15;
+}
+
+.kpi-card__trend {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.kpi-card__trend--up {
+    color: var(--success-color);
+}
+
+/* ===== Panel & Layout Grids ===== */
+.portal-grid-2 {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 24px;
+    margin-bottom: 26px;
+}
+
+.portal-card {
+    background: var(--bg-white);
+    border-radius: 22px;
+    padding: 28px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 26px;
+}
+
+.portal-card:last-child {
+    margin-bottom: 0;
+}
+
+.portal-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.portal-card__eyebrow {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--primary-color);
+    margin-bottom: 4px;
+}
+
+.portal-card__title {
+    font-family: var(--font-heading);
+    font-size: 1.48rem;
+    color: var(--text-main);
+}
+
+.portal-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.portal-input,
+.portal-select {
+    padding: 9px 14px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border-color);
+    background: var(--input-surface);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 0.86rem;
+}
+
+.portal-input:focus,
+.portal-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* ===== Data Tables ===== */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.data-table th {
+    text-align: left;
+    padding: 13px 16px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+    color: var(--text-muted);
+    background: var(--subtle-surface);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.data-table td {
+    padding: 15px 16px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+    vertical-align: middle;
+}
+
+.data-table tbody tr:hover {
+    background: var(--subtle-surface);
+}
+
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-cell__avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border-strong);
+    flex-shrink: 0;
+}
+
+.user-cell__name {
+    font-weight: 600;
+    color: var(--text-main);
+    display: block;
+}
+
+.user-cell__sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+/* ===== Role & Status Pills ===== */
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 11px;
+    border-radius: 999px;
+    font-size: 0.71rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.pill-role-ADMIN { background: rgba(198, 40, 40, 0.12); color: #c62828; }
+.pill-role-STAFF { background: rgba(2, 136, 209, 0.12); color: #0277bd; }
+.pill-role-CHEF { background: rgba(237, 108, 2, 0.14); color: #e65100; }
+.pill-role-CUSTOMER { background: rgba(46, 125, 50, 0.12); color: #2e7d32; }
+
+.pill-status-ACTIVE { background: rgba(46, 125, 50, 0.14); color: #2e7d32; }
+.pill-status-PENDING { background: rgba(237, 108, 2, 0.15); color: #ef6c00; }
+.pill-status-LOCKED { background: rgba(198, 40, 40, 0.14); color: #c62828; }
+
+[data-theme="dark"] .pill-role-ADMIN,
+[data-theme="dark"] .pill-status-LOCKED { background: rgba(239, 83, 80, 0.2); color: #ff8a80; }
+[data-theme="dark"] .pill-role-STAFF { background: rgba(41, 182, 246, 0.2); color: #81d4fa; }
+[data-theme="dark"] .pill-role-CHEF,
+[data-theme="dark"] .pill-status-PENDING { background: rgba(255, 167, 38, 0.2); color: #ffcc80; }
+[data-theme="dark"] .pill-role-CUSTOMER,
+[data-theme="dark"] .pill-status-ACTIVE { background: rgba(102, 187, 106, 0.2); color: #a5d6a7; }
+
+/* ===== Floor Operations & Kitchen Queue ===== */
+.ops-table-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
+    gap: 16px;
+}
+
+.ops-table-card {
+    background: var(--input-surface);
+    border: 1.5px solid var(--border-color);
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.ops-table-card__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-color);
+}
+
+.btn-xs {
+    padding: 7px 11px;
+    border-radius: 8px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+    background: var(--bg-white);
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.btn-xs:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-xs--primary {
+    background: var(--brand-fill);
+    border-color: var(--brand-fill);
+    color: #ffffff;
+}
+
+.btn-xs--primary:hover {
+    background: var(--primary-dark);
+    color: #ffffff;
+}
+
+.ticket-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ticket-item {
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+    background: var(--input-surface);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.ticket-item__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.ticket-item__dish {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+@media (max-width: 1020px) {
+    .concierge-layout {
+        grid-template-columns: 1fr;
+    }
+    .concierge-sidebar {
+        position: static;
+    }
+    .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .portal-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .kpi-grid,
+    .portal-form-grid {
+        grid-template-columns: 1fr;
+    }
+    .portal-banner {
+        padding: 24px 20px;
+    }
+}

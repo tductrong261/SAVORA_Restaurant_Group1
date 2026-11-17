@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floor &amp; Kitchen Operations — Savora Fine Dining</title>
+    <script src="/assets/js/common/theme.js"></script>
+    <link rel="stylesheet" href="/assets/css/public/global.css?v=6">
+    <link rel="stylesheet" href="/assets/css/public/home.css?v=6">
+    <link rel="stylesheet" href="/assets/css/public/portal.css?v=6">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: siteHeader}"></div>
+
+    <main class="portal-main">
+        <div class="container">
+            <!-- Top Operations Banner -->
+            <section class="portal-banner">
+                <div>
+                    <span class="portal-banner__eyebrow">✦ SAVORA LIVE OPERATIONS POS</span>
+                    <h1 class="portal-banner__title">Floor &amp; Kitchen Coordination</h1>
+                    <p class="portal-banner__subtitle">
+                        Real-time table state transitions, guest arrival check-in, and culinary preparation queue for on-duty staff and chefs.
+                    </p>
+                </div>
+                <div class="portal-banner__actions">
+                    <span class="pill pill-status-ACTIVE" style="padding: 8px 14px; font-size: 0.78rem;">
+                        On Duty: <span th:text="${session.fullName}">Staff</span> (<span th:text="${session.roleName}">STAFF</span>)
+                    </span>
+                </div>
+            </section>
+
+            <!-- Shift KPI Summary -->
+            <section class="kpi-grid">
+                <article class="kpi-card">
+                    <div class="kpi-card__top">
+                        <span class="kpi-card__label">Available Tables</span>
+                        <span class="kpi-card__icon">✓</span>
+                    </div>
+                    <div class="kpi-card__value" id="ops-count-available">4</div>
+                    <span class="kpi-card__trend">Ready for immediate seating</span>
+                </article>
+
+                <article class="kpi-card">
+                    <div class="kpi-card__top">
+                        <span class="kpi-card__label">Active Dine-In</span>
+                        <span class="kpi-card__icon">🍷</span>
+                    </div>
+                    <div class="kpi-card__value" id="ops-count-occupied">1</div>
+                    <span class="kpi-card__trend">Currently serving guests</span>
+                </article>
+
+                <article class="kpi-card">
+                    <div class="kpi-card__top">
+                        <span class="kpi-card__label">Reserved Slots</span>
+                        <span class="kpi-card__icon">🕒</span>
+                    </div>
+                    <div class="kpi-card__value" id="ops-count-reserved">1</div>
+                    <span class="kpi-card__trend">120-minute window held</span>
+                </article>
+
+                <article class="kpi-card">
+                    <div class="kpi-card__top">
+                        <span class="kpi-card__label">Sanitizing / Maintenance</span>
+                        <span class="kpi-card__icon">✦</span>
+                    </div>
+                    <div class="kpi-card__value" id="ops-count-cleaning">2</div>
+                    <span class="kpi-card__trend">Housekeeping &amp; technical</span>
+                </article>
+            </section>
+
+            <div class="portal-grid-2">
+                <!-- Left: Interactive Floor Table Control -->
+                <section class="portal-card">
+                    <div class="portal-card__header">
+                        <div>
+                            <span class="portal-card__eyebrow">FLOOR MANAGEMENT</span>
+                            <h2 class="portal-card__title">Live Dining Table Control</h2>
+                        </div>
+                        <select id="ops-zone-filter" class="portal-select">
+                            <option value="ALL">All Zones</option>
+                            <option value="1st Floor">1st Floor — Main Hall</option>
+                            <option value="2nd Floor">2nd Floor — Garden Terrace</option>
+                            <option value="VIP Zone">VIP Private Suites</option>
+                        </select>
+                    </div>
+
+                    <div class="ops-table-grid" id="ops-table-grid"></div>
+                </section>
+
+                <!-- Right: Kitchen Preparation Queue -->
+                <section class="portal-card">
+                    <div class="portal-card__header">
+                        <div>
+                            <span class="portal-card__eyebrow">CULINARY DISPATCH</span>
+                            <h2 class="portal-card__title">Active Kitchen Tickets</h2>
+                        </div>
+                        <span class="pill pill-role-CHEF">Live Queue</span>
+                    </div>
+
+                    <div class="ticket-list" id="kitchen-ticket-list"></div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <div id="ops-toast" class="toast-notification"></div>
+    <div th:replace="~{fragments/footer :: siteFooter}"></div>
+
+    <script src="/assets/js/common/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tables = [
+                { code: 'T1-B01', name: 'Table 01 — Window Side', area: '1st Floor', capacity: 2, status: 'AVAILABLE' },
+                { code: 'T1-B02', name: 'Table 02 — Main Hall', area: '1st Floor', capacity: 4, status: 'AVAILABLE' },
+                { code: 'T1-B03', name: 'Table 03 — Main Hall', area: '1st Floor', capacity: 4, status: 'OCCUPIED' },
+                { code: 'T1-B04', name: 'Table 04 — Main Hall', area: '1st Floor', capacity: 4, status: 'CLEANING' },
+                { code: 'T2-B01', name: 'Table 01 — Garden Terrace', area: '2nd Floor', capacity: 6, status: 'RESERVED' },
+                { code: 'T2-B02', name: 'Table 02 — Garden Terrace', area: '2nd Floor', capacity: 8, status: 'AVAILABLE' },
+                { code: 'VIP-01', name: 'VIP Lotus Private Suite', area: 'VIP Zone', capacity: 12, status: 'AVAILABLE' },
+                { code: 'VIP-02', name: 'VIP Royal Banquet Room', area: 'VIP Zone', capacity: 16, status: 'MAINTENANCE' }
+            ];
+
+            const tickets = [
+                { id: 'ORD-1042', table: 'T1-B03', dish: 'Lava-Stone Grilled Australian Tenderloin (250g)', qty: 2, status: 'COOKING' },
+                { id: 'ORD-1042', table: 'T1-B03', dish: 'Roasted Kabocha Pumpkin & Black Truffle Soup', qty: 2, status: 'READY' },
+                { id: 'ORD-1045', table: 'T2-B01', dish: 'Oven-Baked Spiny Lobster with Mozzarella', qty: 1, status: 'PENDING' },
+                { id: 'ORD-1046', table: 'VIP-01', dish: 'Savora Royal Seafood Hotpot Set', qty: 1, status: 'COOKING' }
+            ];
+
+            const zoneFilter = document.getElementById('ops-zone-filter');
+            const tableGrid = document.getElementById('ops-table-grid');
+            const ticketList = document.getElementById('kitchen-ticket-list');
+
+            function updateCounters() {
+                document.getElementById('ops-count-available').textContent = tables.filter(t => t.status === 'AVAILABLE').length;
+                document.getElementById('ops-count-occupied').textContent = tables.filter(t => t.status === 'OCCUPIED').length;
+                document.getElementById('ops-count-reserved').textContent = tables.filter(t => t.status === 'RESERVED').length;
+                document.getElementById('ops-count-cleaning').textContent = tables.filter(t => t.status === 'CLEANING' || t.status === 'MAINTENANCE').length;
+            }
+
+            function renderTables() {
+                const zone = zoneFilter?.value || 'ALL';
+                const list = tables.filter(t => zone === 'ALL' || t.area === zone);
+
+                tableGrid.innerHTML = list.map(t => `
+                    <div class="ops-table-card">
+                        <div>
+                            <div class="table-card__top">
+                                <span class="table-card__code">${t.code}</span>
+                                <span class="table-status-badge badge-status-${t.status}">${t.status}</span>
+                            </div>
+                            <h4 class="table-card__name" style="margin-top: 10px;">${t.name}</h4>
+                            <div class="table-card__meta" style="margin-top: 4px;">
+                                <span>📍 ${t.area}</span>
+                                <span>👥 ${t.capacity} Seats</span>
+                            </div>
+                        </div>
+                        <div class="ops-table-card__actions">
+                            <button type="button" class="btn-xs btn-xs--primary" data-code="${t.code}" data-next="OCCUPIED">Seat Guest</button>
+                            <button type="button" class="btn-xs" data-code="${t.code}" data-next="CLEANING">Clear Table</button>
+                            <button type="button" class="btn-xs" data-code="${t.code}" data-next="AVAILABLE" style="grid-column: 1 / -1;">Mark Available</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                tableGrid.querySelectorAll('button[data-code]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const target = tables.find(item => item.code === btn.dataset.code);
+                        if (target) {
+                            target.status = btn.dataset.next;
+                            updateCounters();
+                            renderTables();
+                            showToast(`Updated ${target.code} status to ${target.status}`);
+                        }
+                    });
+                });
+            }
+
+            function renderTickets() {
+                ticketList.innerHTML = tickets.map((tk, idx) => `
+                    <div class="ticket-item">
+                        <div>
+                            <div class="ticket-item__meta">
+                                <span>#${tk.id}</span>
+                                <span>•</span>
+                                <span>Table ${tk.table}</span>
+                                <span>•</span>
+                                <span>Qty: ${tk.qty}</span>
+                            </div>
+                            <div class="ticket-item__dish">${tk.dish}</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="pill ${tk.status === 'READY' ? 'pill-status-ACTIVE' : 'pill-status-PENDING'}">${tk.status}</span>
+                            <button type="button" class="btn-xs btn-xs--primary" data-ticket="${idx}">
+                                ${tk.status === 'PENDING' ? 'Start Cooking' : (tk.status === 'COOKING' ? 'Mark Ready' : 'Complete')}
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+                ticketList.querySelectorAll('button[data-ticket]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const item = tickets[Number(btn.dataset.ticket)];
+                        if (!item) return;
+                        if (item.status === 'PENDING') item.status = 'COOKING';
+                        else if (item.status === 'COOKING') item.status = 'READY';
+                        else item.status = 'SERVED';
+                        renderTickets();
+                        showToast(`Order ${item.id} (${item.dish}) marked as ${item.status}`);
+                    });
+                });
+            }
+
+            function showToast(msg) {
+                const toast = document.getElementById('ops-toast');
+                if (!toast) return;
+                toast.textContent = msg;
+                toast.style.display = 'block';
+                clearTimeout(window.__opsToastTimer);
+                window.__opsToastTimer = setTimeout(() => { toast.style.display = 'none'; }, 3000);
+            }
+
+            zoneFilter?.addEventListener('change', renderTables);
+            updateCounters();
+            renderTables();
+            renderTickets();
+        });
+    </script>
+</body>
+</html>
